@@ -1,1 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
+
+// Import Bootstrap 4
+@import "~bootstrap/dist/css/bootstrap.css";
+
+// Import Angular Material
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+// Bring in material fonts
+@import "./assets/fonts/material/material-icons.css";
+
+@import "~mediaelement/build/mediaelementplayer.css";

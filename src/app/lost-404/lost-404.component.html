@@ -1,0 +1,16 @@
+<section class="mt-3">
+  <mat-card class="mx-auto">
+    <img mat-card-image src="./assets/img/404.jpg" alt="404 Error Photo">
+    <mat-card-content>
+      <p>
+        <strong>Quote:</strong> {{ randomQuote }}
+      </p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button routerLink="/">Go Back Home</button>
+      <button mat-button
+              (click)="updateQuote()"
+              class="pull-right">Change Quote?</button>
+    </mat-card-actions>
+  </mat-card>
+</section>

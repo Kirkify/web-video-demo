@@ -1,0 +1,76 @@
+<div class="container-fluid video-container">
+  <video #player1
+         width="640" height="360" style="max-width:100%;"
+         poster="./assets/img/mn_poster.jpg"
+         preload="none"
+         controls
+         playsinline
+         webkit-playsinline>
+  </video>
+</div>
+
+<div class="container mt-3">
+
+  <form #newStreamForm
+        [formGroup]="newStreamFormGroup"
+        (ngSubmit)="onNewStreamSubmit()">
+
+    <!-- Current Video Source Input -->
+    <mat-form-field class="d-block">
+      <input matInput
+             placeholder="Create New Stream"
+             formControlName="source">
+
+      <mat-icon matSuffix (click)="onNewStreamSubmit()">send</mat-icon>
+
+      <mat-error *ngIf="newStreamFormGroup.get('source').hasError('required')">
+        An RTSP Url is required.
+      </mat-error>
+    </mat-form-field>
+
+  </form>
+
+  <form #existingStreamForm
+        [formGroup]="existingStreamFormGroup"
+        (ngSubmit)="onExistingStreamSubmit()">
+
+    <!-- Current Video Source Input -->
+    <mat-form-field class="d-block">
+      <input matInput
+             placeholder="Join Existing Stream"
+             formControlName="source">
+
+      <mat-icon matSuffix (click)="onExistingStreamSubmit()">send</mat-icon>
+
+      <mat-error *ngIf="existingStreamFormGroup.get('source').hasError('required')">
+        A RTSP Url is required.
+      </mat-error>
+    </mat-form-field>
+
+  </form>
+
+  <div class="row">
+
+    <div class="col-sm-6 text-center">
+      <mat-form-field>
+        <mat-select placeholder="Video Aspect" [(ngModel)]="selectedAspect">
+          <mat-option *ngFor="let aspect of aspects" [value]="aspect.value">
+            {{ aspect.viewValue }}
+          </mat-option>
+        </mat-select>
+        <mat-hint align="start"><strong>Must be set before initialization</strong> </mat-hint>
+      </mat-form-field>
+    </div>
+
+    <div class="col-sm-6 text-center">
+      <mat-form-field>
+        <input matInput
+               placeholder="Current Renderer"
+               [(ngModel)]="currentRenderer">
+      </mat-form-field>
+    </div>
+  </div>
+
+</div>
+
+
