@@ -22,13 +22,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.navLinks$ = this.navLinkService.getLinks();
   }
 
-  addLink() {
-    this.navLinkService.addLink({
-      name: 'Cool',
-      route: '/',
-      icon: 'send'
-    });
-  }
   ngOnInit() {
     this.mobileQuery = this.media.matchMedia('(max-width: 600px)');
     this.mobileQueryListener = () => this.changeDetectorRef.detectChanges();

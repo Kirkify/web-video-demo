@@ -14,12 +14,12 @@ export class NavLinkService {
   dataStore = {
     links: [
       {
-        route: 'jsmpeg',
+        route: '/jsmpeg',
         name: 'JsMpeg',
         icon: 'gesture'
       },
       {
-        route: 'media-element',
+        route: '/media-element',
         name: 'Media Element',
         icon: 'toys'
       }

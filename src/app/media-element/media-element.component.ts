@@ -1,5 +1,6 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {MediaElementService} from './services/media-element.service';
 
 declare var MediaElementPlayer: any;
 declare var mejs: any;
@@ -25,9 +26,13 @@ export class MediaElementComponent implements OnInit, OnDestroy {
 
   source: string;
   currentRenderer: string;
+  currentStream: string;
   mediaPlayer: any;
+  loading: boolean;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private service: MediaElementService) {}
 
   ngOnInit() {
     // const source = 'http://www.bok.net/dash/tears_of_steel/cleartext/stream.mpd';
@@ -35,11 +40,11 @@ export class MediaElementComponent implements OnInit, OnDestroy {
     // const source = 'http://localhost:8888/live-stream/stream.m3u8';
 
     this.newStreamFormGroup = this.fb.group({
-      source: ['', [Validators.required]]
+      source: ['rtsp://admin:admin@10.51.140.154/live?channel=video.v-1&encoder=1', [Validators.required]]
     });
 
     this.existingStreamFormGroup = this.fb.group({
-      source: [source, [Validators.required]]
+      source: ['', [Validators.required]]
     });
 
     this.setupPlayer(source);
@@ -60,27 +65,47 @@ export class MediaElementComponent implements OnInit, OnDestroy {
         });
       }
     });
-    this.mediaPlayer.setSrc(source);
+    this.updateStream(source, false);
+  }
+
+  updateStream(src: string, autoStart = true) {
+    this.mediaPlayer.setSrc(src);
+    this.currentStream = src;
     this.mediaPlayer.load();
+
+    if (!mejs.Features.isiOS && !mejs.Features.isAndroid && autoStart) {
+      this.mediaPlayer.play();
+    }
+    this.loading = false;
   }
 
   onExistingStreamSubmit() {
-    if (this.existingStreamFormGroup.invalid) {
+    if (this.existingStreamFormGroup.invalid || this.loading) {
       return;
     }
 
-    this.mediaPlayer.setSrc(this.existingStreamFormGroup.get('source').value);
-    this.mediaPlayer.load();
-
-    if (!mejs.Features.isiOS && !mejs.Features.isAndroid) {
-      this.mediaPlayer.play();
-    }
+    this.updateStream(this.existingStreamUrl);
   }
 
   onNewStreamSubmit() {
-    if (this.newStreamFormGroup.invalid) {
+    if (this.newStreamFormGroup.invalid || this.loading) {
       return;
     }
+    this.service.createStream(this.newStreamUrl)
+      .subscribe(res => {
+        this.loading = true;
+        setTimeout(() => {
+          this.updateStream(res.url);
+        }, 20000);
+      });
+  }
+
+  get existingStreamUrl() {
+    return this.existingStreamFormGroup.get('source').value;
+  }
+
+  get newStreamUrl() {
+    return this.newStreamFormGroup.get('source').value;
   }
 
   ngOnDestroy() {

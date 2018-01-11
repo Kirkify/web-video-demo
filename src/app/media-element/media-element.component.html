@@ -9,6 +9,11 @@
   </video>
 </div>
 
+<mat-progress-bar *ngIf="loading"
+                  color="primary"
+                  mode="indeterminate">
+</mat-progress-bar>
+
 <div class="container mt-3">
 
   <form #newStreamForm
@@ -49,6 +54,12 @@
 
   </form>
 
+  <mat-form-field class="d-block">
+    <input matInput
+           placeholder="Current Stream"
+           [(ngModel)]="currentStream">
+  </mat-form-field>
+
   <div class="row">
 
     <div class="col-sm-6 text-center">
@@ -66,7 +77,8 @@
       <mat-form-field>
         <input matInput
                placeholder="Current Renderer"
-               [(ngModel)]="currentRenderer">
+               [(ngModel)]="currentRenderer"
+               readonly>
       </mat-form-field>
     </div>
   </div>

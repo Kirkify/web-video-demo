@@ -17,6 +17,7 @@ import { JsmpegComponent } from './jsmpeg/jsmpeg.component';
 import {JsmpegService} from './jsmpeg/services/jsmpeg.service';
 import {HttpClientModule} from '@angular/common/http';
 import { NavLinkService } from './services/nav-link.service';
+import { MediaElementService } from './media-element/services/media-element.service';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,7 @@ import { NavLinkService } from './services/nav-link.service';
     GoogleMaterialModule,
     CoreModule
   ],
-  providers: [ JsmpegService, NavLinkService ],
+  providers: [ JsmpegService, NavLinkService, MediaElementService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

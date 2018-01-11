@@ -5,7 +5,11 @@ const bodyParser = require('body-parser');
 require('body-parser-xml')(bodyParser);
 const cookieParser = require('cookie-parser');
 const Stream = require('node-rtsp-stream');
+const ffmpeg = require('fluent-ffmpeg');
+const crypto = require('crypto');
+const fs = require('fs');
 const WebSocket = require('ws');
+var path = require('path');
 const http = require('http');
 let request = require('request');
 request = request.defaults({});
@@ -31,17 +35,39 @@ app.use(cors({
     'x-app-id-challenge'
   ]
 }));
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-app.post('/media-element', (req, res) => {
+app.post('/hls', (req, res) => {
   const url = req.body.url;
+  // make sure you set the correct path to your video file storage
+  // var pathToMovie = './storage/' + req.params.filename;
+  const folderName = '/hls/' + crypto.randomBytes(15).toString('hex');
+  const streamName = '/stream.m3u8';
 
+  fs.mkdirSync('./public' + folderName);
 
+  var proc = ffmpeg(url).outputOptions([
+        '-profile:v baseline',
+        '-s 640x360',
+        '-start_number 0',
+        '-hls_time 10',
+        '-hls_list_size 0',
+        '-f hls'
+      ])
+    .on('start', commandLine => {
+      console.log(commandLine);
+    })
+    .save('./public' + folderName + streamName);
 
-  res.status(200).send(JSON.stringify(response));
+  const data = {
+    url: serverAddress +  folderName + streamName
+  };
+
+  res.status(200).send(JSON.stringify(data));
+
 });
 
 app.post('/jsmpeg', (req, res) => {
@@ -66,3 +92,5 @@ app.post('/message', (req, res) => {
 });
 
 app.listen(1234);
+
+var serverAddress = 'http://localhost:1234';
